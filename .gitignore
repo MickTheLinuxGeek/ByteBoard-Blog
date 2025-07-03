@@ -1,0 +1,16 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+/.junie/
+/01-design_docs/
+/db.sqlite3
+
+# Misc.
+.idea

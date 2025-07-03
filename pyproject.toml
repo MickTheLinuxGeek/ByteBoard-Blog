@@ -1,0 +1,15 @@
+[project]
+name = "byte-board-blog"
+version = "0.1.0"
+description = "A single user blog application written using Python Django and ReactPy"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2.4",
+    "django-markdown-deux>=1.0.6",
+    "djangorestframework>=3.16.0",
+    "markdown>=3.8.2",
+    "pygments>=2.19.2",
+    "reactpy>=1.1.0",
+    "reactpy-django>=5.2.1",
+]
