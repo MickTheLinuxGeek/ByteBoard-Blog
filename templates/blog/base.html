@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Byte Board Blog{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1><a href="{% url 'blog:home' %}" class="text-white text-decoration-none">Byte Board Blog</a></h1>
+                </div>
+                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                    <a href="{% url 'blog:rss_feed' %}" class="text-white me-3">RSS</a>
+                    <a href="{% url 'blog:atom_feed' %}" class="text-white">Atom</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        <div class="row">
+            <div class="col-md-8">
+                {% block content %}{% endblock %}
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">Categories</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for category in categories %}
+                                <li><a href="{% url 'blog:category_posts' category.slug %}">{{ category.name }}</a></li>
+                            {% empty %}
+                                <li>No categories yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">Tags</div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tag in tags %}
+                                <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-secondary text-decoration-none">{{ tag.name }}</a>
+                            {% empty %}
+                                <p>No tags yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Archives</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for date in archive_dates %}
+                                <li>
+                                    <a href="{% url 'blog:year_archive' date.year %}">{{ date.year }}</a>
+                                    {% if date.months %}
+                                        <ul>
+                                            {% for month in date.months %}
+                                                <li><a href="{% url 'blog:month_archive' date.year month %}">{{ month|date:"F" }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% empty %}
+                                <li>No archives yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-3 mt-4">
+        <div class="container">
+            <p class="m-0 text-center">&copy; {% now "Y" %} Byte Board Blog. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
