@@ -29,6 +29,7 @@ urlpatterns = [
     path("admin/blog/post/preview/", markdown_preview, name="markdown_preview"),
     path("", include("blog.urls")),  # Include the blog app URLs
     path("api/", include("blog.api_urls")),  # Include the blog app API URLs
+    path("reactpy/", include("reactpy_django.http.urls")),
 ]
 
 # Serve media files in development

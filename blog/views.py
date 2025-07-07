@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
 
+# from reactpy_django import render_component
+from .components.hello import helloworld
 from .models import Category, Post, Tag
 
 
@@ -195,3 +197,17 @@ def markdown_preview(request):
         )
         return HttpResponse(html)
     return HttpResponse("Method not allowed", status=405)
+
+
+def reactpy_demo(request):
+    """View for demonstrating ReactPy integration with Django."""
+    # Get common context data
+    # context = get_common_context()
+
+    # Render the HelloWorld component
+    # component = render_component(helloworld)
+
+    # Add the component to the context
+    # context["component"] = component
+
+    return render(request, "blog/reactpy_demo.html")
