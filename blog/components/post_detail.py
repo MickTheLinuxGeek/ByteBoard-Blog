@@ -1,0 +1,111 @@
+"""PostDetail component for the Byte Board Blog."""
+
+from asgiref.sync import sync_to_async
+from reactpy import component, html
+from reactpy_django.hooks import use_query
+
+from blog.models import Post
+
+
+# --- Fetchers ---
+@sync_to_async
+def fetch_post_detail(*, post_id):
+    return (
+        Post.objects.select_related("author")
+        .prefetch_related("categories", "tags")
+        .get(id=post_id)
+    )
+
+
+# --- Component ---
+@component
+def PostDetail(post_id: int):
+    # Main post
+    post_query = use_query(
+        fetch_post_detail,
+        {"post_id": post_id},
+    )
+
+    # Handle loading or error states
+    if post_query.loading:
+        return html.div({"classname": "alert alert-info"}, "Loading post...")
+
+    if post_query.error or not post_query.data:
+        return html.div({"classname": "alert alert-warning"}, "Post not found.")
+
+    post = post_query.data
+
+    return html.div(
+        {"class": "card mb-4"},
+        # Post header
+        html.div(
+            {"class": "card-header"},
+            html.h1({"class": "card-title"}, post.title),
+            html.div(
+                {"class": "text-muted"},
+                f"Published on {post.published_date.strftime('%B %d, %Y')} by {post.author.username}",
+            ),
+        ),
+        # Post content
+        html.div(
+            {"class": "card-body"},
+            html.div(
+                {
+                    "dangerouslySetInnerHTML": {
+                        "__html": getattr(post, "content_html", post.content),
+                    },
+                    "class": "card-text markdown-content",
+                },
+            ),
+        ),
+        # Footer with categories and tags
+        html.div(
+            {"class": "card-footer"},
+            html.div(
+                {"class": "row"},
+                # Categories
+                html.div(
+                    {"class": "col-md-6"},
+                    html.h5("Categories:"),
+                    html.ul(
+                        {"class": "list-inline"},
+                        [
+                            html.li(
+                                {"class": "list-inline-item"},
+                                html.a(
+                                    {"href": f"/category/{cat.slug}/"},
+                                    cat.name,
+                                ),
+                            )
+                            for cat in post.categories.all()
+                        ]
+                        or [html.li({"class": "list-inline-item"}, "None")],
+                    ),
+                ),
+                # Tags
+                html.div(
+                    {"class": "col-md-6"},
+                    html.h5("Tags:"),
+                    html.div(
+                        {"class": "d-flex flex-wrap gap-2"},
+                        [
+                            html.a(
+                                {
+                                    "href": f"/tag/{tag.slug}/",
+                                    "class": "badge bg-secondary text-decoration-none",
+                                },
+                                tag.name,
+                            )
+                            for tag in post.tags.all()
+                        ]
+                        or [html.span("None")],
+                    ),
+                ),
+            ),
+            # Back button
+            html.div(
+                {"class": "mt-3"},
+                html.a({"href": "/", "class": "btn btn-secondary"}, "Back to Posts"),
+            ),
+        ),
+    )

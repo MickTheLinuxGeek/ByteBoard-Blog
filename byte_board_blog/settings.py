@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -76,8 +77,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "byte_board_blog.wsgi.application"
 
-
-# Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Use environment variable to determine which database to use
@@ -136,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/New_York"
 
 USE_I18N = True
 
@@ -151,6 +150,15 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# # --- REACTPY DJANGO SETTINGS (Optional but helpful) ---
+# REACTPY_COMPONENTS = {
+#     "default": "blog.components",  # path to your components
+# }
+# REACTPY_HOST_URLS = {
+#     "default": "/reactpy/",  # make sure this is routed in your urls.py
+# }
+#
 
 # Media files (User uploaded files)
 MEDIA_URL = "/media/"

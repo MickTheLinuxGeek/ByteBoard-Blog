@@ -9,8 +9,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
 
-# from reactpy_django import render_component
-from .components.hello import helloworld
 from .models import Category, Post, Tag
 
 
@@ -49,7 +47,15 @@ def get_common_context():
 
 def home(request):
     """Home page view that displays a list of recent published posts."""
-    posts = Post.objects.filter(status="published").order_by("-published_date")
+    posts = (
+        Post.objects.select_related(
+            "author",
+        )  # select_related and prefetch_related added!
+        .prefetch_related("categories", "tags")
+        .filter(status="published")
+        .order_by("-published_date")
+    )
+    # posts = Post.objects.filter(status="published").order_by("-published_date")
 
     # Pagination
     paginator = Paginator(posts, 5)  # Show 5 posts per page

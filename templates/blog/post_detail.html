@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load reactpy %}
 
 {% block title %}{{ post.title }} - Byte Board Blog{% endblock %}
 
@@ -7,34 +8,15 @@
 {% endblock %}
 
 {% block content %}
-    <article class="card mb-4">
-        <div class="card-body">
-            <h2 class="card-title mb-3">{{ post.title }}</h2>
-            <p class="card-text text-muted mb-3">
-                <small>
-                    Posted by {{ post.author.get_full_name|default:post.author.username }} 
-                    on {{ post.published_date|date:"F j, Y" }}
-                </small>
-            </p>
-            
-            <div class="mb-4">
-                {% for category in post.categories.all %}
-                    <a href="{% url 'blog:category_posts' category.slug %}" class="badge bg-primary text-decoration-none me-1">{{ category.name }}</a>
-                {% endfor %}
-                {% for tag in post.tags.all %}
-                    <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-secondary text-decoration-none me-1">{{ tag.name }}</a>
-                {% endfor %}
-            </div>
-            
-            <div class="card-text post-content">
-                {{ post.content|linebreaks }}
-            </div>
-        </div>
-    </article>
-    
+    {% if post.id %}
+        {% component "blog.components.PostDetail" post_id=post.id %}
+    {% else %}
+        <div class="alert alert-danger">Invalid post</div>
+    {% endif %}
+
     <div class="d-flex justify-content-between mb-4">
         <a href="{% url 'blog:home' %}" class="btn btn-outline-primary">&larr; Back to Posts</a>
-        
+
         <div class="social-sharing">
             <span class="me-2">Share:</span>
             <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
@@ -51,7 +33,7 @@
             </a>
         </div>
     </div>
-    
+
     <!-- Disqus Comments -->
     <div id="disqus_thread" class="mt-5"></div>
     <script>
