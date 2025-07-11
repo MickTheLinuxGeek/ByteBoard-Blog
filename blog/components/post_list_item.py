@@ -80,16 +80,28 @@ def PostListItem(post_id: int):
                     {"class": "small"},
                     "Categories: ",
                     [
-                        html.a({"href": f"/category/{cat.slug}/"}, cat.name)
+                        html.a(
+                            {
+                                "href": f"/category/{cat.slug}/",
+                                "class": "badge bg-primary text-decoration-none me-1",
+                            },
+                            cat.name,
+                        )
                         for cat in post.categories.all()
                     ]
-                    or [html.li({"class": "list-inline-item"}, "None")],
+                    or [html.span({"class": "list-inline-item"}, "None")],
                 ),
                 html.div(
                     {"class": "small"},
                     "Tags: ",
                     [
-                        html.a({"href": f"/tag/{tag.slug}/"}, tag.name)
+                        html.a(
+                            {
+                                "href": f"/tag/{tag.slug}/",
+                                "class": "badge bg-secondary text-decoration-none me-1",
+                            },
+                            tag.name,
+                        )
                         for tag in post.tags.all()
                     ]
                     or [html.span("None")],
