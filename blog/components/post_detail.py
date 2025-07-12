@@ -102,10 +102,10 @@ def PostDetail(post_id: int):
                     ),
                 ),
             ),
-            # Back button
-            html.div(
-                {"class": "mt-3"},
-                html.a({"href": "/", "class": "btn btn-secondary"}, "Back to Posts"),
-            ),
+            # # Back button
+            # html.div(
+            #     {"class": "mt-3"},
+            #     html.a({"href": "/", "class": "btn btn-secondary"}, "Back to Posts"),
+            # ),
         ),
     )
