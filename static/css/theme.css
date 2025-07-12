@@ -1,0 +1,109 @@
+/* Byte Board Blog - Theme Variables */
+
+:root {
+  /* Primary Theme Colors */
+  --primary-color: #3498db;        /* Blue */
+  --secondary-color: #2c3e50;      /* Dark Blue */
+  --accent-color: #e74c3c;         /* Red */
+  --success-color: #2ecc71;        /* Green */
+  --warning-color: #f39c12;        /* Orange */
+  --info-color: #3498db;           /* Light Blue */
+  --danger-color: #e74c3c;         /* Red */
+  
+  /* Neutral Colors */
+  --light-color: #ecf0f1;          /* Light Gray */
+  --dark-color: #2c3e50;           /* Dark Blue */
+  --text-color: #333333;           /* Dark Gray */
+  --light-text-color: #f8f9fa;     /* Off White */
+  --muted-text-color: #6c757d;     /* Medium Gray */
+  --border-color: #dee2e6;         /* Light Gray */
+  
+  /* Background Colors */
+  --body-bg: #f8f9fa;              /* Light Gray */
+  --card-bg: #ffffff;              /* White */
+  --header-bg: var(--secondary-color);
+  --footer-bg: var(--secondary-color);
+  
+  /* Typography */
+  --font-family-base: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-family-headings: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-sm: 0.875rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --line-height-base: 1.6;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 3rem;
+  
+  /* Border Radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-pill: 50rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-speed: 0.3s;
+  --transition-timing: ease;
+  
+  /* Z-index levels */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+}
+
+/* Dark Mode Theme (for future implementation) */
+[data-theme="dark"] {
+  --primary-color: #3498db;        /* Blue */
+  --secondary-color: #2c3e50;      /* Dark Blue */
+  --accent-color: #e74c3c;         /* Red */
+  
+  --light-color: #2c3e50;          /* Dark Blue */
+  --dark-color: #ecf0f1;           /* Light Gray */
+  --text-color: #f8f9fa;           /* Off White */
+  --light-text-color: #333333;     /* Dark Gray */
+  --muted-text-color: #adb5bd;     /* Light Gray */
+  --border-color: #495057;         /* Dark Gray */
+  
+  --body-bg: #121212;              /* Very Dark Gray */
+  --card-bg: #1e1e1e;              /* Dark Gray */
+}
+
+/* Theme utility classes */
+.text-primary { color: var(--primary-color) !important; }
+.text-secondary { color: var(--secondary-color) !important; }
+.text-accent { color: var(--accent-color) !important; }
+.text-success { color: var(--success-color) !important; }
+.text-warning { color: var(--warning-color) !important; }
+.text-info { color: var(--info-color) !important; }
+.text-danger { color: var(--danger-color) !important; }
+.text-light { color: var(--light-color) !important; }
+.text-dark { color: var(--dark-color) !important; }
+.text-muted { color: var(--muted-text-color) !important; }
+
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-secondary { background-color: var(--secondary-color) !important; }
+.bg-accent { background-color: var(--accent-color) !important; }
+.bg-success { background-color: var(--success-color) !important; }
+.bg-warning { background-color: var(--warning-color) !important; }
+.bg-info { background-color: var(--info-color) !important; }
+.bg-danger { background-color: var(--danger-color) !important; }
+.bg-light { background-color: var(--light-color) !important; }
+.bg-dark { background-color: var(--dark-color) !important; }
+.bg-body { background-color: var(--body-bg) !important; }
+.bg-card { background-color: var(--card-bg) !important; }

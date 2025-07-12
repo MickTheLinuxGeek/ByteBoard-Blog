@@ -8,9 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
-/.junie/
-/01-design_docs/
-/db.sqlite3
 
 # Misc.
 .idea
+/00-project_docs/
+/01-design_docs/
+/db.sqlite3
+/.junie/

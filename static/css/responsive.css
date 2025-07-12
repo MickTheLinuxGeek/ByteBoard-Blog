@@ -1,0 +1,139 @@
+/* Byte Board Blog - Responsive Styles */
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+  /* Global adjustments */
+  body {
+    font-size: 0.95rem;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  /* Layout adjustments */
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  /* Component adjustments */
+  .post-list-item {
+    padding: 1rem;
+  }
+  
+  .post-detail {
+    padding: 1rem;
+  }
+  
+  .card-header {
+    font-size: 1rem;
+  }
+  
+  /* Header adjustments */
+  header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  /* Layout adjustments */
+  .container {
+    max-width: 540px;
+  }
+  
+  /* Component adjustments */
+  .post-list-item .post-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* Layout adjustments */
+  .container {
+    max-width: 720px;
+  }
+  
+  /* Sidebar adjustments */
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* Layout adjustments */
+  .container {
+    max-width: 960px;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  /* Layout adjustments */
+  .container {
+    max-width: 1140px;
+  }
+  
+  /* Content adjustments for larger screens */
+  .post-detail-content {
+    font-size: 1.1rem;
+    line-height: 1.9;
+  }
+}
+
+/* Print styles */
+@media print {
+  header, footer, .sidebar, .pagination, .post-actions {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+  
+  .post-detail {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+  
+  a {
+    text-decoration: underline;
+    color: #000;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 90%;
+  }
+  
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+  
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+  
+  p, h2, h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  h2, h3 {
+    page-break-after: avoid;
+  }
+}

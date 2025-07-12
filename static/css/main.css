@@ -1,0 +1,219 @@
+/* Byte Board Blog - Main Stylesheet */
+
+/* Global Styles */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --light-color: #ecf0f1;
+  --dark-color: #2c3e50;
+  --text-color: #333;
+  --light-text-color: #f8f9fa;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: #f8f9fa;
+}
+
+a {
+  color: var(--primary-color);
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+/* Header Styles */
+header {
+  background: linear-gradient(135deg, var(--secondary-color), var(--dark-color)) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+header a {
+  transition: opacity var(--transition-speed) ease;
+}
+
+header a:hover {
+  opacity: 0.8;
+}
+
+/* Main Content Area */
+main {
+  min-height: 80vh;
+}
+
+/* Sidebar Styles */
+.card {
+  margin-bottom: 1.5rem;
+  border: none;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: var(--secondary-color);
+  color: var(--light-text-color);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* Post List Styles */
+.post-list-item {
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-speed) ease;
+}
+
+.post-list-item:hover {
+  transform: translateY(-5px);
+}
+
+.post-title {
+  color: var(--secondary-color);
+  font-weight: 700;
+}
+
+.post-meta {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.post-excerpt {
+  margin-top: 0.5rem;
+}
+
+/* Post Detail Styles */
+.post-detail {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  padding: 2rem;
+}
+
+.post-detail-title {
+  color: var(--secondary-color);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.post-detail-meta {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.post-detail-content {
+  line-height: 1.8;
+}
+
+/* Category and Tag Styles */
+.category-badge, .tag-badge {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.tag-badge {
+  background-color: var(--accent-color);
+}
+
+.category-badge:hover, .tag-badge:hover {
+  opacity: 0.9;
+}
+
+/* Search Bar Styles */
+.search-form {
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  border-radius: 20px;
+  padding-left: 1rem;
+  border: 1px solid #ced4da;
+}
+
+.search-button {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  border-radius: 20px;
+}
+
+/* Pagination Styles */
+.pagination {
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.page-link {
+  color: var(--primary-color);
+  border-radius: 4px;
+  margin: 0 3px;
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Footer Styles */
+footer {
+  background-color: var(--secondary-color);
+  color: var(--light-text-color);
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+footer a {
+  color: var(--light-text-color);
+}
+
+footer a:hover {
+  color: var(--primary-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+  .post-detail {
+    padding: 1rem;
+  }
+  
+  header .col-md-4 {
+    justify-content: flex-start !important;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .post-list-item {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header, .card-body {
+    padding: 0.75rem;
+  }
+}
