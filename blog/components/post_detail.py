@@ -40,9 +40,9 @@ def PostDetail(post_id: int):
         # Post header
         html.div(
             {"class": "card-header"},
-            html.h1({"class": "card-title"}, post.title),
+            html.h1({"class": "card-title text-info"}, post.title),
             html.div(
-                {"class": "text-muted"},
+                {"class": "text-light"},
                 f"Published on {post.published_date.strftime('%B %d, %Y')} by {post.author.username}",
             ),
         ),

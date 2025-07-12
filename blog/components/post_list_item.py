@@ -57,7 +57,7 @@ def PostListItem(post_id: int):
                 ),
             ),
             html.div(
-                {"class": "text-muted small"},
+                {"class": "text-light small"},
                 f"Published on {post.published_date.strftime('%B %d, %Y')} by {post.author.username}",
             ),
         ),
