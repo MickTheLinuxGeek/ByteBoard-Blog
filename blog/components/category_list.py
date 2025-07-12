@@ -21,20 +21,19 @@ def CategoryList(categories=None, title="Categories"):
         html.div({"class": "card-header"}, title),
         html.div(
             {"class": "card-body"},
-            html.ul(
-                {"class": "list-unstyled"},
+            html.div(
+                {"class": "d-flex flex-wrap gap-2"},
                 [
-                    html.li(
-                        {"class": "mb-2"},
-                        html.a(
-                            {"href": f"/category/{category.slug}/"},
-                            category.name,
-                        ),
+                    html.a(
+                        {
+                            "href": f"/category/{category.slug}/",
+                        },
+                        category.name,
                     )
                     for category in categories
                 ]
                 if categories
-                else [html.li("No categories available.")],
+                else [html.p("No categories available.")],
             ),
         ),
     )

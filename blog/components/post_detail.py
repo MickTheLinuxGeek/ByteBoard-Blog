@@ -73,7 +73,10 @@ def PostDetail(post_id: int):
                             html.li(
                                 {"class": "list-inline-item"},
                                 html.a(
-                                    {"href": f"/category/{cat.slug}/"},
+                                    {
+                                        "href": f"/category/{cat.slug}/",
+                                        "class": "badge bg-primary text-decoration-none me-1",
+                                    },
                                     cat.name,
                                 ),
                             )
