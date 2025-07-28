@@ -22,6 +22,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from blog.admin import blog_admin_site
+
 from blog.views import markdown_preview
 
 urlpatterns = [
@@ -30,6 +32,7 @@ urlpatterns = [
     path("", include("blog.urls")),  # Include the blog app URLs
     path("api/", include("blog.api_urls")),  # Include the blog app API URLs
     path("reactpy/", include("reactpy_django.http.urls")),
+    path("my-blog-admin/", blog_admin_site.urls, name="my-blog-admin"),
 ]
 
 # Serve media files in development

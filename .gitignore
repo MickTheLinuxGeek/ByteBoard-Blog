@@ -15,3 +15,4 @@ wheels/
 /01-design_docs/
 /db.sqlite3
 /.junie/
+/staticfiles/

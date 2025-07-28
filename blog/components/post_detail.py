@@ -3,6 +3,7 @@
 from asgiref.sync import sync_to_async
 from reactpy import component, html
 from reactpy_django.hooks import use_query
+from .content_markdown import Markdown
 
 from blog.models import Post
 
@@ -49,14 +50,15 @@ def PostDetail(post_id: int):
         # Post content
         html.div(
             {"class": "card-body"},
-            html.div(
-                {
-                    "dangerouslySetInnerHTML": {
-                        "__html": getattr(post, "content_html", post.content),
-                    },
-                    "class": "card-text markdown-content",
-                },
-            ),
+            # html.div(
+            Markdown(source=post.content),
+            # {
+            #     "dangerouslySetInnerHTML": {
+            #         "__html": getattr(post, "content_html", post.content),
+            #     },
+            #     "class": "card-text markdown-content",
+            # },
+            # ),
         ),
         # Footer with categories and tags
         html.div(
