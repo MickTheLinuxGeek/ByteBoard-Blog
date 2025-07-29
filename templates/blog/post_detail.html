@@ -3,6 +3,16 @@
 
 {% block title %}{{ post.title }} - Byte Board Blog{% endblock %}
 
+{% block meta_description %}{{ post.content|striptags|truncatechars:160 }}{% endblock %}
+{% block meta_keywords %}{% for tag in post.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ post.title }} - Byte Board Blog{% endblock %}
+{% block og_description %}{{ post.content|striptags|truncatechars:200 }}{% endblock %}
+
+{% block twitter_title %}{{ post.title }} - Byte Board Blog{% endblock %}
+{% block twitter_description %}{{ post.content|striptags|truncatechars:200 }}{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
 {% endblock %}

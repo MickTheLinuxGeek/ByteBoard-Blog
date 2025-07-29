@@ -20,11 +20,22 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 
 from blog.admin import blog_admin_site
-
+from blog.sitemap import CategorySitemap, PostSitemap, StaticSitemap, TagSitemap
 from blog.views import markdown_preview
+from django.views.generic.base import TemplateView
+
+
+# Define the sitemaps dictionary
+sitemaps = {
+    "posts": PostSitemap,
+    "categories": CategorySitemap,
+    "tags": TagSitemap,
+    "static": StaticSitemap,
+}
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -33,6 +44,24 @@ urlpatterns = [
     path("api/", include("blog.api_urls")),  # Include the blog app API URLs
     path("reactpy/", include("reactpy_django.http.urls")),
     path("my-blog-admin/", blog_admin_site.urls, name="my-blog-admin"),
+    # Sitemap URLs
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+    path(
+        "sitemap-<section>.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+    # Robots.txt
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
 ]
 
 # Serve media files in development
