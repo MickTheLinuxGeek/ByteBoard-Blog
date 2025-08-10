@@ -39,6 +39,36 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "title",
+                    "slug",
+                    "author",
+                    "content",
+                    "status",
+                    "categories",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "SEO Section",
+            {
+                "fields": (
+                    "meta_title",
+                    "meta_description",
+                    "image",
+                    "og_title",
+                    "og_description",
+                ),
+                "description": "Per post meta information.",
+            },
+        ),
+    )
+
     list_display = (
         "title",
         "slug",
