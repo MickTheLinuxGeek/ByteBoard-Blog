@@ -16,11 +16,6 @@ def Markdown(source: str):
         ],
     )
 
-    # Add this print statement for debugging
-    print("--- Generated HTML ---")
-    print(html_string)
-    print("----------------------")
-
     return html.div(
         {
             "dangerouslySetInnerHTML": {"__html": html_string},

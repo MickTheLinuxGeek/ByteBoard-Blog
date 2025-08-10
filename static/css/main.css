@@ -266,3 +266,16 @@ footer a:hover {
   display: block;
   padding: 1rem;
 }
+
+/* Selects any <img> that is the one and only element
+  inside a parent <p> tag. This is how most markdown
+  parsers render a standalone image link.
+*/
+p > img:first-child:last-child {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 2em auto; /* Adds vertical space and centers the image */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

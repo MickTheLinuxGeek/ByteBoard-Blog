@@ -70,6 +70,30 @@ class Post(BaseModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_date = models.DateTimeField(null=True, blank=True)
+    meta_title = models.CharField(
+        max_length=60, blank=True, help_text="Optimal length: 50-60 characters"
+    )
+    meta_description = models.CharField(
+        max_length=160, blank=True, help_text="Optimal length: 150-160 characters"
+    )
+    image = models.ImageField(
+        upload_to="post_images/",
+        blank=True,
+        null=True,
+        help_text="Image for the blog post and Open Graph preview.",
+    )
+
+    # You can reuse meta_title and meta_description, or add specific OG fields:
+    og_title = models.CharField(
+        max_length=60,
+        blank=True,
+        help_text="Open Graph title. If blank, uses meta title or post title.",
+    )
+    og_description = models.CharField(
+        max_length=160,
+        blank=True,
+        help_text="Open Graph description. If blank, uses meta description.",
+    )
 
     class Meta:
         verbose_name = "Post"
@@ -85,6 +109,25 @@ class Post(BaseModel):
 
         if self.status == "published" and not self.published_date:
             self.published_date = timezone.now()
+
+        # --- NEW: Automatically populate OG fields if they are empty ---
+        if not self.og_title:
+            # Use the meta_title if available, otherwise use the main title
+            self.og_title = self.meta_title if self.meta_title else self.title
+
+        if not self.og_description:
+            # Use the meta_description if available, otherwise truncate the content
+            if self.meta_description:
+                self.og_description = self.meta_description
+            else:
+                # A simple way to get a plain text summary
+                plain_content = self.content.replace("\n", " ").replace("\r", "")
+                self.og_description = (
+                    (plain_content[:157] + "...")
+                    if len(plain_content) > 160
+                    else plain_content
+                )
+        # --- End of new code ---
 
         super().save(*args, **kwargs)
 
