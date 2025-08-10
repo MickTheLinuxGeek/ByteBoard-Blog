@@ -41,7 +41,8 @@ class TagAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     fieldsets = (
         (
-            None,
+            # None,
+            "Blog Post Editor",
             {
                 "fields": (
                     "title",
