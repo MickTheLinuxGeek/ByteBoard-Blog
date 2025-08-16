@@ -52,6 +52,7 @@ class PostAdmin(admin.ModelAdmin):
                     "status",
                     "categories",
                     "tags",
+                    "published_date",
                 )
             },
         ),

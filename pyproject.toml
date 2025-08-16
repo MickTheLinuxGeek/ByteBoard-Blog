@@ -13,6 +13,7 @@ dependencies = [
     "markdown-it-py>=3.0.0",
     "pygments>=2.19.2",
     "python-markdown>=0.1.0",
+    "pytz>=2025.2",
     "reactpy>=1.1.0",
     "reactpy-django>=5.2.1",
 ]
