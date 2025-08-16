@@ -40,12 +40,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
     # Third-party apps
     "rest_framework",
     "reactpy_django",
     # Local apps
     "blog",
 ]
+
+# Site framework settings
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

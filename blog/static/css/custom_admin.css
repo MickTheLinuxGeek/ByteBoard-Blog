@@ -1,0 +1,121 @@
+/* blog/static/css/custom_admin.css */
+
+/* ===================================================================
+* CUSTOM EASYMDE TOOLBAR STYLES
+* This is the section you can copy into your own project's CSS file.
+* ===================================================================
+*/
+
+/* Style the main container of the editor */
+.EasyMDEContainer {
+    border-radius: 8px;
+    border: 1px solid #4a5568; /* Darker border */
+}
+
+/* Target the toolbar itself */
+.editor-toolbar {
+    background-color: #2d3748; /* Dark background for the toolbar */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px solid #4a5568; /* Separator line between toolbar and text area */
+    padding: 4px;
+}
+
+/* Style the toolbar buttons (the icons) */
+.editor-toolbar button {
+    color: #cbd5e0; /* Light gray icon color */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Change color of buttons on hover */
+.editor-toolbar button:hover {
+    background-color: #4a5568; /* Slightly lighter background on hover */
+    color: #ffffff; /* White icon color on hover */
+}
+
+/* Style the active/toggled buttons (e.g., when 'bold' is on) */
+.editor-toolbar button.active {
+    background-color: #718096; /* A medium gray for active state */
+    color: #ffffff; /* White icon for active state */
+}
+
+/* Style the separator lines between button groups */
+.editor-toolbar i.separator {
+    border-left: 1px solid #4a5568;
+    border-right: 1px solid #4a5568;
+}
+
+/* Style the text editing area (CodeMirror) to match the dark theme */
+.CodeMirror {
+    background-color: #1a202c; /* Very dark background for text area */
+    color: #e2e8f0; /* Light text color */
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* Style the cursor */
+.CodeMirror-cursor {
+    border-left: 1px solid #e2e8f0;
+}
+
+/*
+ * ===================================================================
+ * PREVIEW PANE STYLES (NEW!)
+ * ===================================================================
+*/
+
+/* Style the preview pane to match the dark theme */
+.editor-preview, .editor-preview-side {
+    background-color: #1a202c; /* Match the editor's background */
+    color: #e2e8f0; /* Match the editor's text color */
+}
+
+/* Style links in the preview */
+.editor-preview a, .editor-preview-side a {
+    color: #63b3ed; /* A nice blue for links */
+}
+
+/* Style blockquotes in the preview */
+.editor-preview blockquote, .editor-preview-side blockquote {
+    border-left: 4px solid #4a5568;
+    color: #a0aec0;
+    background-color: #2d3748;
+    padding: 0.5em 1em;
+    margin-left: 0;
+    border-radius: 4px;
+}
+
+/* Style code blocks in the preview */
+.editor-preview pre, .editor-preview-side pre {
+    background-color: #2d3748;
+    padding: 1em;
+    border-radius: 6px;
+    border: 1px solid #4a5568;
+}
+
+.editor-preview code, .editor-preview-side code {
+    font-family: 'Courier New', Courier, monospace;
+    color: #f6ad55; /* An orange/yellow for code */
+}
+
+/* Fix for Unordered Lists (bullets) */
+.editor-preview ul > li,
+.editor-preview-side ul > li {
+    /* Restore the bullet points (disc style) and ensure they are positioned correctly. */
+    list-style: disc inside !important;
+    /* Reset padding that Django's base.css might add. */
+    padding-left: 1.5em !important;
+    margin-left: 0 !important;
+}
+
+form .aligned ul {
+    margin-left: 1.5em;
+}
+
+/* Style the status bar at the bottom */
+.editor-statusbar {
+    background-color: #2d3748;
+    color: #a0aec0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}

@@ -3,6 +3,8 @@
 from asgiref.sync import sync_to_async
 from reactpy import component, html
 from reactpy_django.hooks import use_query
+from .content_markdown import Markdown
+import pytz
 
 from blog.models import Post
 
@@ -35,6 +37,11 @@ def PostDetail(post_id: int):
 
     post = post_query.data
 
+    # Set timezone to local timezone instead of UTC
+    local_tz = pytz.timezone("America/New_York")  # Change to your desired timezone
+    local_time = post.published_date.astimezone(local_tz)
+    formatted_date = local_time.strftime("%B %d, %Y")
+
     return html.div(
         {"class": "card mb-4"},
         # Post header
@@ -43,20 +50,21 @@ def PostDetail(post_id: int):
             html.h1({"class": "card-title text-info"}, post.title),
             html.div(
                 {"class": "text-light"},
-                f"Published on {post.published_date.strftime('%B %d, %Y')} by {post.author.username}",
+                f"Published on {formatted_date} by {post.author.username}",
             ),
         ),
         # Post content
         html.div(
             {"class": "card-body"},
-            html.div(
-                {
-                    "dangerouslySetInnerHTML": {
-                        "__html": getattr(post, "content_html", post.content),
-                    },
-                    "class": "card-text markdown-content",
-                },
-            ),
+            # html.div(
+            Markdown(source=post.content),
+            # {
+            #     "dangerouslySetInnerHTML": {
+            #         "__html": getattr(post, "content_html", post.content),
+            #     },
+            #     "class": "card-text markdown-content",
+            # },
+            # ),
         ),
         # Footer with categories and tags
         html.div(

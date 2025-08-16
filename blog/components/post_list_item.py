@@ -3,6 +3,7 @@
 from asgiref.sync import sync_to_async
 from reactpy import component, html
 from reactpy_django.hooks import use_query
+import pytz
 
 from blog.models import Post
 
@@ -46,6 +47,11 @@ def PostListItem(post_id: int):
 
     post = post_query.data
 
+    # Set timezone to local timezone instead of UTC
+    local_tz = pytz.timezone("America/New_York")  # Change to your desired timezone
+    local_time = post.published_date.astimezone(local_tz)
+    formatted_date = local_time.strftime("%B %d, %Y")
+
     return html.div(
         {"class": "card mb-4"},
         html.div(
@@ -58,7 +64,7 @@ def PostListItem(post_id: int):
             ),
             html.div(
                 {"class": "text-light small"},
-                f"Published on {post.published_date.strftime('%B %d, %Y')} by {post.author.username}",
+                f"Published on {formatted_date} by {post.author.username}",
             ),
         ),
         html.div(

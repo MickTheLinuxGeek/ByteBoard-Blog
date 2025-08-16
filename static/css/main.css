@@ -217,3 +217,65 @@ footer a:hover {
     padding: 0.75rem;
   }
 }
+/*
+ * CSS for rendering Markdown on a light background.
+ */
+
+.markdown-view {
+  color: #333333; /* Dark grey for body text */
+  line-height: 1.6;
+}
+
+.markdown-view h1,
+.markdown-view h2,
+.markdown-view h3 {
+  color: #000000; /* Black for headers */
+  margin-top: 24px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #dddddd; /* A light grey separator */
+  padding-bottom: 8px;
+}
+
+.markdown-view p {
+  margin-bottom: 16px;
+}
+
+.markdown-view a {
+  color: #0066cc; /* A standard blue for links */
+  text-decoration: none;
+}
+
+.markdown-view a:hover {
+  text-decoration: underline;
+}
+
+.markdown-view ul,
+.markdown-view ol {
+  padding-left: 20px;
+}
+
+.markdown-view code {
+  background-color: #f4f4f4; /* Light grey background for code */
+  color: #c7254e; /* A reddish pink for code text */
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.markdown-view pre > code {
+  display: block;
+  padding: 1rem;
+}
+
+/* Selects any <img> that is the one and only element
+  inside a parent <p> tag. This is how most markdown
+  parsers render a standalone image link.
+*/
+p > img:first-child:last-child {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 2em auto; /* Adds vertical space and centers the image */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

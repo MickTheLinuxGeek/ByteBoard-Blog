@@ -1,7 +1,29 @@
 {% extends "blog/base.html" %}
 {% load reactpy %}
 
-{% block title %}{{ post.title }} - Byte Board Blog{% endblock %}
+{% block meta_title %}{{ post.meta_title|default:post.title }}{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.content|truncatewords:25 }}{% endblock %}
+{% block meta_keywords %}{% for tag in post.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{# --- Open Graph Blocks --- #}
+{% block og_title %}{{ post.og_title|default:post.title }}{% endblock %}
+{% block og_description %}{{ post.og_description|default:post.meta_description|default:post.content|striptags|truncatewords:25 }}{% endblock %}
+{% block og_image %}
+    {% if post.image %}
+        {{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}
+    {% endif %}
+{% endblock %}
+
+{# --- Twitter Blocks (mirroring the OG content) --- #}
+{% block twitter_title %}{{ post.og_title|default:post.title }}{% endblock %}
+{% block twitter_description %}{{ post.og_description|default:post.meta_description|default:post.content|striptags|truncatewords:25 }}{% endblock %}
+{% block twitter_image %}
+    {% if post.image %}
+        {{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}
+    {% endif %}
+{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
