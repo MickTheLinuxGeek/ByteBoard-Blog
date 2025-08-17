@@ -52,7 +52,53 @@ python manage.py runserver</code></pre>
 </main>
 
 <footer>
-    <p>Copyright &copy; 2025</p>
+    <div class="container">
+        <p>&copy; <span id="current-year"></span> Michael Biel -- Byte Board Blog</p>
+    </div>
 </footer>
+<script>
+    // Simple JS to set the current year in the footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Theme Toggle JavaScript
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body; // Or document.documentElement if you prefer to set class on <html>
+
+    // Function to set theme and save preference
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️'; // Sun icon for light mode
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.remove('dark-mode');
+            themeToggle.textContent = '🌙'; // Moon icon for dark mode
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    // Event listener for the toggle button
+    themeToggle.addEventListener('click', () => {
+        if (body.classList.contains('dark-mode')) {
+            setTheme('light');
+        } else {
+            setTheme('dark');
+        }
+    });
+
+    // Apply theme on initial load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else if (prefersDark) {
+            setTheme('dark');
+        } else {
+            setTheme('light'); // Default to light if no preference or saved theme
+        }
+    });
+</script>
 </body>
 </html>
