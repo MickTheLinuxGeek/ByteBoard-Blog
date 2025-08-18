@@ -1,9 +1,12 @@
 from typing import ClassVar
+import re
 
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+import markdown as md
+import bleach
 
 
 # Create your models here.
@@ -121,13 +124,23 @@ class Post(BaseModel):
                 self.og_description = self.meta_description
             else:
                 # A simple way to get a plain text summary
-                plain_content = self.content.replace("\n", " ").replace("\r", "")
+                # plain_content = self.content.replace("\n", " ").replace("\r", "")
+
+                # 0 Remove markdown headers from content
+                content_without_headers = re.sub(
+                    r"^#{1,6}\s+.*$", "", self.content, flags=re.MULTILINE
+                ).strip()
+
+                # 1. Convert Markdown to HTML
+                plain_content = md.markdown(content_without_headers)
+
+                # Strip HTML tags
+                plain_text = bleach.clean(plain_content, tags=set([]), strip=True)
+
+                # Truncate to 160 characters
                 self.og_description = (
-                    (plain_content[:157] + "...")
-                    if len(plain_content) > 160
-                    else plain_content
+                    (plain_text[:157] + "...") if len(plain_text) > 160 else plain_text
                 )
-        # --- End of new code ---
 
         super().save(*args, **kwargs)
 
@@ -142,3 +155,26 @@ class Post(BaseModel):
         self.status = "draft"
         self.published_date = None
         self.save()
+
+    @property
+    def summary(self):
+        """
+        A plain-text, truncated summary of the post content.
+        """
+        # 0 Remove markdown headers from content
+        content_without_headers = re.sub(
+            r"^#{1,6}\s+.*$", "", self.content, flags=re.MULTILINE
+        ).strip()
+
+        # 1. Convert Markdown to HTML
+        # html_body = md.markdown(self.content)
+        html_body = md.markdown(content_without_headers)
+
+        # 2. Strip HTML tags
+        plain_text = bleach.clean(html_body, tags=set([]), strip=True)
+
+        # 3. Truncate words (a simple way)
+        words = plain_text.split()
+        if len(words) > 30:
+            return " ".join(words[:30]) + "..."
+        return plain_text

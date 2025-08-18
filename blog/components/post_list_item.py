@@ -8,15 +8,15 @@ import pytz
 from blog.models import Post
 
 
-# --- Helper ---
-def _truncate_content(content, max_length=200):
-    if len(content) <= max_length:
-        return content
-    truncated = content[:max_length]
-    last_space = truncated.rfind(" ")
-    if last_space != -1:
-        truncated = truncated[:last_space]
-    return truncated + "..."
+# # --- Helper ---
+# def _truncate_content(content, max_length=200):
+#     if len(content) <= max_length:
+#         return content
+#     truncated = content[:max_length]
+#     last_space = truncated.rfind(" ")
+#     if last_space != -1:
+#         truncated = truncated[:last_space]
+#     return truncated + "..."
 
 
 @sync_to_async
@@ -69,7 +69,7 @@ def PostListItem(post_id: int):
         ),
         html.div(
             {"class": "card-body"},
-            html.div({"class": "card-text"}, _truncate_content(post.content, 200)),
+            html.div({"class": "card-text"}, post.summary),
             html.div(
                 {"class": "mt-3"},
                 html.a(
