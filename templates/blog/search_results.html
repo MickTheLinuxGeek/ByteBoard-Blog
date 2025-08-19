@@ -1,0 +1,36 @@
+{% extends "blog/base.html" %}
+{% load reactpy %}
+
+{% block title %}
+{% if query %}
+Search Results for "{{ query }}" - Byte Board Blog
+{% else %}
+Search - Byte Board Blog
+{% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if query %}
+        {% if posts %}
+            {% component "blog.components.PostList" posts=posts page_obj=posts title="Search Results for: "|add:query query_params=query_params %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">No results found</h4>
+                <p>Sorry, no posts were found matching your search query "<strong>{{ query }}</strong>".</p>
+                <hr>
+                <p class="mb-0">Try searching with different keywords or check out our <a href="{% url 'blog:home' %}" class="alert-link">latest posts</a>.</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Empty search query</h4>
+            <p>Please enter a search term to find posts.</p>
+            <hr>
+            <p class="mb-0">You can search through post titles, content, categories, and tags.</p>
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'blog:home' %}" class="btn btn-outline-primary">&larr; Back to All Posts</a>
+    </div>
+{% endblock %}

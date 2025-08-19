@@ -41,6 +41,13 @@
 
         <div class="social-sharing">
             <span class="me-2">Share:</span>
+            <a href="#" target="_blank" class="btn btn-sm btn-outline-primary me-1">Mastodon</a>
+
+            <a href="#" target="_blank" class="btn btn-sm btn-outline-primary me-1"> Blusky</a>
+        </div>
+        <!--
+        <div class="social-sharing">
+            <span class="me-2">Share:</span>
             <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
                target="_blank" class="btn btn-sm btn-outline-primary me-1">
                 Twitter
@@ -54,9 +61,11 @@
                 LinkedIn
             </a>
         </div>
+        -->
     </div>
 
-    <!-- Disqus Comments -->
+    <!--
+    Disqus Comments
     <div id="disqus_thread" class="mt-5"></div>
     <script>
         var disqus_config = function () {
@@ -71,6 +80,7 @@
         })();
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    -->
 {% endblock %}
 
 {% block extra_js %}

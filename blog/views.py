@@ -3,6 +3,7 @@ import datetime
 import markdown
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 
 # from django.db.models import Count
 from django.http import HttpResponse
@@ -177,6 +178,44 @@ def archive_posts(request, year, month=None):
     )
 
     return render(request, "blog/archive_posts.html", context)
+
+
+def search_posts(request):
+    """View for searching posts by title, content, categories, and tags."""
+    query = request.GET.get("q", "").strip()
+    posts = Post.objects.filter(status="published")
+    
+    if query:
+        # Search in post title, content, categories, and tags
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(categories__name__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct().order_by("-published_date")
+    else:
+        posts = posts.none()  # Return empty queryset if no query
+    
+    # Pagination
+    paginator = Paginator(posts, 5)  # Show 5 posts per page
+    page = request.GET.get("page")
+    
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    
+    # Get common context data
+    context = get_common_context()
+    context.update({
+        "query": query,
+        "posts": posts,
+        "query_params": {"q": query} if query else {},
+    })
+    
+    return render(request, "blog/search_results.html", context)
 
 
 @staff_member_required
