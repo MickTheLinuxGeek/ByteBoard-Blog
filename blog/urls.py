@@ -51,6 +51,8 @@ urlpatterns = [
     # Archive posts
     path("archive/<int:year>/", views.archive_posts, name="year_archive"),
     path("archive/<int:year>/<int:month>/", views.archive_posts, name="month_archive"),
+    # Search posts
+    path("search/", views.search_posts, name="search_posts"),
     # RSS and Atom feeds
     path("feed/rss/", LatestPostsFeed(), name="rss_feed"),
     path("feed/atom/", AtomLatestPostsFeed(), name="atom_feed"),

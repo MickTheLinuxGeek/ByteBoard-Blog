@@ -4,16 +4,26 @@ from reactpy import component, html
 
 
 @component
-def Pagination(page_obj=None):
+def Pagination(page_obj=None, query_params=None):
     """
     Component for displaying pagination controls.
 
     Args:
         page_obj: Pagination object with page, paginator, has_next, has_previous attributes
+        query_params: Dictionary of query parameters to preserve in pagination links
 
     """
     if page_obj is None or not hasattr(page_obj, "paginator"):
         return None
+
+    # Helper function to build URLs with preserved query parameters
+    def build_url(page_num):
+        if query_params:
+            params = query_params.copy()
+            params['page'] = page_num
+            query_string = '&'.join(f"{k}={v}" for k, v in params.items() if v)
+            return f"?{query_string}"
+        return f"?page={page_num}"
 
     # Generate page range to display
     paginator = page_obj.paginator
@@ -56,7 +66,7 @@ def Pagination(page_obj=None):
                 html.a(
                     {
                         "class": "page-link",
-                        "href": f"?page={page_obj.previous_page_number()}"
+                        "href": build_url(page_obj.previous_page_number())
                         if page_obj.has_previous()
                         else "#",
                         "aria-label": "Previous",
@@ -73,7 +83,7 @@ def Pagination(page_obj=None):
                     html.a(
                         {
                             "class": "page-link",
-                            "href": f"?page={page}"
+                            "href": build_url(page)
                             if page not in ("...", current_page)
                             else "#",
                         },
@@ -90,7 +100,7 @@ def Pagination(page_obj=None):
                 html.a(
                     {
                         "class": "page-link",
-                        "href": f"?page={page_obj.next_page_number()}"
+                        "href": build_url(page_obj.next_page_number())
                         if page_obj.has_next()
                         else "#",
                         "aria-label": "Next",

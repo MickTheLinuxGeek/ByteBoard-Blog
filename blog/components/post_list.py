@@ -7,7 +7,7 @@ from .post_list_item import PostListItem
 
 
 @component
-def PostList(posts=None, page_obj=None, title="Latest Posts"):
+def PostList(posts=None, page_obj=None, title="Latest Posts", query_params=None):
     """
     Component for displaying a list of posts with pagination.
 
@@ -15,6 +15,7 @@ def PostList(posts=None, page_obj=None, title="Latest Posts"):
         posts: List of Post objects
         page_obj: Pagination object with page, paginator, has_next, has_previous attributes
         title: Title to display above the post list
+        query_params: Dictionary of query parameters to preserve in pagination links
 
     """
     if posts is None:
@@ -27,5 +28,5 @@ def PostList(posts=None, page_obj=None, title="Latest Posts"):
         if posts
         else html.div({"class": "alert alert-info"}, "No posts available."),
         # Display pagination if page_obj is provided
-        Pagination(page_obj=page_obj) if page_obj else None,
+        Pagination(page_obj=page_obj, query_params=query_params) if page_obj else None,
     )
