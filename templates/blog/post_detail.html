@@ -37,14 +37,26 @@
     {% endif %}
 
     <div class="d-flex justify-content-between mb-4">
-        <a href="{% url 'blog:home' %}" class="btn btn-outline-primary">&larr; Back to Posts</a>
+        <div>
+            <a href="{% url 'blog:home' %}" class="btn btn-outline-primary">&larr; Back to Posts</a>
+        </div>
 
         <div class="social-sharing">
-            <span class="me-2">Share:</span>
-            <a href="#" target="_blank" class="btn btn-sm btn-outline-primary me-1">Mastodon</a>
+            <form action="{% url 'blog:share_post' post.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="mastodon" class="btn btn-outline-primary">Share on Mastodon</button>
+                <button type="submit" name="bluesky" class="btn btn-outline-primary">Share on BlueSky</button>
+            </form>
 
-            <a href="#" target="_blank" class="btn btn-sm btn-outline-primary me-1"> Blusky</a>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
+    </div>
         <!--
         <div class="social-sharing">
             <span class="me-2">Share:</span>
@@ -62,7 +74,6 @@
             </a>
         </div>
         -->
-    </div>
 
     <!--
     Disqus Comments
