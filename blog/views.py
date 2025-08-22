@@ -4,11 +4,13 @@ import markdown
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
+from django.contrib import messages
 
 # from django.db.models import Count
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.csrf import csrf_protect
+from social_sharing.sharing import share_to_mastodon, share_to_bluesky
 
 from .models import Category, Post, Tag
 
@@ -184,38 +186,60 @@ def search_posts(request):
     """View for searching posts by title, content, categories, and tags."""
     query = request.GET.get("q", "").strip()
     posts = Post.objects.filter(status="published")
-    
+
     if query:
         # Search in post title, content, categories, and tags
-        posts = posts.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(categories__name__icontains=query) |
-            Q(tags__name__icontains=query)
-        ).distinct().order_by("-published_date")
+        posts = (
+            posts.filter(
+                Q(title__icontains=query)
+                | Q(content__icontains=query)
+                | Q(categories__name__icontains=query)
+                | Q(tags__name__icontains=query)
+            )
+            .distinct()
+            .order_by("-published_date")
+        )
     else:
         posts = posts.none()  # Return empty queryset if no query
-    
+
     # Pagination
     paginator = Paginator(posts, 5)  # Show 5 posts per page
     page = request.GET.get("page")
-    
+
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
-    
+
     # Get common context data
     context = get_common_context()
-    context.update({
-        "query": query,
-        "posts": posts,
-        "query_params": {"q": query} if query else {},
-    })
-    
+    context.update(
+        {
+            "query": query,
+            "posts": posts,
+            "query_params": {"q": query} if query else {},
+        }
+    )
+
     return render(request, "blog/search_results.html", context)
+
+
+# Share post view:  Mastodon and Bluesky
+def share_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    # post = get_object_or_404(Post, slug=slug, status="published")
+    post_url = request.build_absolute_uri(post.get_absolute_url())
+
+    if "mastodon" in request.POST:
+        result = share_to_mastodon(post.title, post_url)
+        messages.info(request, result)
+    elif "bluesky" in request.POST:
+        result = share_to_bluesky(post.title, post_url)
+        messages.info(request, result)
+
+    return redirect(post.get_absolute_url())
 
 
 @staff_member_required

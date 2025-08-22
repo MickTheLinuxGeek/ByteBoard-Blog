@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from django.urls import reverse
 import markdown as md
 import bleach
 
@@ -102,6 +103,10 @@ class Post(BaseModel):
         verbose_name = "Post"
         verbose_name_plural = "Posts"
         ordering: ClassVar = ["-published_date", "-created_at"]
+
+    def get_absolute_url(self):
+        """Returns the canonical URL for a post."""
+        return reverse("blog:post_detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.title

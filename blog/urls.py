@@ -44,6 +44,8 @@ urlpatterns = [
     path("", views.home, name="home"),
     # Post detail
     path("post/<slug:slug>/", views.post_detail, name="post_detail"),
+    # Share post
+    path("post/<int:pk>/share/", views.share_post, name="share_post"),
     # Category posts
     path("category/<slug:slug>/", views.category_posts, name="category_posts"),
     # Tag posts
