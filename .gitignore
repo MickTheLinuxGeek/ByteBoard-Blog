@@ -11,7 +11,7 @@ wheels/
 
 # Misc.
 .idea
-/00-project_docs/
+/00-project_docs/*
 /01-design_docs/
 /db.sqlite3
 /.junie/
