@@ -1,9 +1,9 @@
 {% extends "blog/base.html" %}
-{% load reactpy %}
+{# load reactpy #}
 
-{% block title %}
+{% block meta_title %}
     {% if month_name %}
-        Archive: {{ month_name }} {{ year }} - Byte Board Blog
+        Archive: "{{ month_name }}" "{{ year }}" - Byte Board Blog
     {% else %}
         Archive: {{ year }} - Byte Board Blog
     {% endif %}
@@ -11,9 +11,9 @@
 
 {% block content %}
     {% if month_name %}
-        {% component "blog.components.PostList" posts=posts page_obj=posts title="Posts from "|add:month_name|add:" "|add:year|stringformat:"s" %}
+        {% include "blog/partials/post_list.html" with posts=posts page_obj=posts title=title %}
     {% else %}
-        {% component "blog.components.PostList" posts=posts page_obj=posts title="Posts from "|add:year|stringformat:"s" %}
+        {% include "blog/partials/post_list.html" with posts=posts page_obj=posts title=title %}
     {% endif %}
 
     <div class="mt-4">

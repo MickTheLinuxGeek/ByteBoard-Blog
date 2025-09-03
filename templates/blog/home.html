@@ -1,8 +1,7 @@
 {% extends "blog/base.html" %}
-{% load reactpy %}
 
 {% block title %}Byte Board Blog - Home{% endblock %}
 
 {% block content %}
-    {% component "blog.components.PostList" posts=posts page_obj=posts title="Latest Posts" %}
+    {% include "blog/partials/post_list.html" %}
 {% endblock %}

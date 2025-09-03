@@ -58,6 +58,8 @@ urlpatterns = [
     # RSS and Atom feeds
     path("feed/rss/", LatestPostsFeed(), name="rss_feed"),
     path("feed/atom/", AtomLatestPostsFeed(), name="atom_feed"),
+    # About page
+    path("about/", views.about_me, name="about_me"),
     # ReactPy demo
-    path("reactpy-demo/", views.reactpy_demo, name="reactpy_demo"),
+    # path("reactpy-demo/", views.reactpy_demo, name="reactpy_demo"),
 ]

@@ -35,6 +35,10 @@ class Category(BaseModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        """Returns the canonical URL for a category."""
+        return reverse("blog:category_posts", kwargs={"slug": self.slug})
+
 
 class Tag(BaseModel):
     name = models.CharField(max_length=50, unique=True)
@@ -52,6 +56,10 @@ class Tag(BaseModel):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """Returns the canonical URL for a tag."""
+        return reverse("blog:tag_posts", kwargs={"slug": self.slug})
 
 
 class Post(BaseModel):

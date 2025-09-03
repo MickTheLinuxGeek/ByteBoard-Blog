@@ -1,10 +1,9 @@
 {% extends "blog/base.html" %}
-{% load reactpy %}
 
 {% block title %}Category: {{ category.name }} - Byte Board Blog{% endblock %}
 
 {% block content %}
-    {% component "blog.components.PostList" posts=posts page_obj=posts title="Posts in Category: "|add:category.name %}
+    {% include "blog/partials/post_list.html" with posts=posts page_obj=posts title="Posts in Category: "|add:category.name %}
 
     <div class="mt-4">
         <a href="{% url 'blog:home' %}" class="btn btn-outline-primary">&larr; Back to All Posts</a>

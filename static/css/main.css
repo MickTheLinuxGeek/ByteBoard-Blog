@@ -279,3 +279,17 @@ p > img:first-child:last-child {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+/* Sidebar toggle for mobile */
+.sidebar-content {
+    display: none; /* Hidden by default on mobile */
+}
+
+.sidebar-content.show {
+    display: block; /* Shown when the 'show' class is added */
+}
+
+@media (min-width: 768px) {
+    .sidebar-content {
+        display: block; /* Always visible on desktop */
+    }
+}

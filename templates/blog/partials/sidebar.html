@@ -1,0 +1,73 @@
+<!-- templates/blog/partials/sidebar.html -->
+{% load blog_extras %}
+<div class="sidebar-wrapper">
+    <!-- Hamburger toggle button -->
+    <button id="sidebar-toggle" class="hamburger-btn d-md-none">☰ Menu</button>
+
+    <!-- Sidebar content -->
+    <div id="sidebar-content" class="sidebar-content">
+
+        {% include "blog/partials/search_bar.html" %}
+
+        <!-- Category List -->
+        <div class="card mb-4">
+            <div class="card-header">Categories</div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for category in all_categories %}
+                        <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+                    {% empty %}
+                        <p class="m-0">No categories available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tag List -->
+        <div class="card mb-4">
+            <div class="card-header">Tags</div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tag in all_tags %}
+                        <a href="{{ tag.get_absolute_url }}" class="badge bg-secondary text-decoration-none">{{ tag.name }}</a>
+                    {% empty %}
+                        <p class="m-0">No tags available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Archives</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for date in archive_dates %}
+                        <li>
+                            {# Link for the year #}
+                            <a href="/archive/{{ date.year }}/">{{ date.year }}</a>
+
+                            {# Check if there are months for this year #}
+                            {% if date.months %}
+                                <ul>
+                                    {# Loop through the months #}
+                                    {% for month in date.months %}
+                                        <li>
+                                            {# Link for the month #}
+                                            {# Note: You'll need a custom template filter called 'month_name' #}
+                                            {# to convert the month number (e.g., 8) to its name ("August") #}
+                                            <a href="/archive/{{ date.year }}/{{ month }}/">{{ month|month_name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        {# This part runs if archive_dates is empty #}
+                        <li>No archives yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>

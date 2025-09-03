@@ -1,0 +1,76 @@
+{% extends "blog/base.html" %}
+
+{% block meta_title %}About Me - Byte Board Blog{% endblock %}
+{% block meta_description %}Learn more about the author of Byte Board Blog - a passionate software developer sharing insights about programming, technology, and software development.{% endblock %}
+{% block meta_keywords %}about, developer, programmer, software engineer, technology blogger{% endblock %}
+
+{% block og_title %}About Me - Byte Board Blog{% endblock %}
+{% block og_description %}Learn more about the author of Byte Board Blog - a passionate software developer sharing insights about programming, technology, and software development.{% endblock %}
+
+{% block twitter_title %}About Me - Byte Board Blog{% endblock %}
+{% block twitter_description %}Learn more about the author of Byte Board Blog - a passionate software developer sharing insights about programming, technology, and software development.{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="card-title h2 mb-4">About Me</h1>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="bg-primary rounded-circle mx-auto mb-3" style="width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
+                        <i class="text-white" style="font-size: 4rem;">👋</i>
+                    </div>
+                    <h3>Hello, I'm a Developer!</h3>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <p class="lead">Welcome to Byte Board Blog! I'm passionate about software development, technology, and sharing knowledge with the community.</p>
+                
+                <p>This blog is my digital space where I share insights, tutorials, and thoughts about:</p>
+                
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="text-primary">🐍</i> <strong>Python Development</strong> - From basics to advanced concepts</li>
+                    <li class="mb-2"><i class="text-primary">🌐</i> <strong>Web Technologies</strong> - Django, HTML, CSS, JavaScript and more</li>
+                    <li class="mb-2"><i class="text-primary">💾</i> <strong>Software Engineering</strong> - Best practices, design patterns, and architecture</li>
+                    <li class="mb-2"><i class="text-primary">🚀</i> <strong>Technology Trends</strong> - Latest developments in the tech world</li>
+                    <li class="mb-2"><i class="text-primary">🔧</i> <strong>Tools & Productivity</strong> - Development tools and workflows</li>
+                </ul>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>My Journey</h4>
+                <p>I believe in continuous learning and sharing knowledge. Through this blog, I aim to document my learning journey and help others who are on similar paths in software development.</p>
+                
+                <p>Whether you're a beginner looking to learn programming or an experienced developer seeking new perspectives, I hope you'll find valuable content here.</p>
+            </div>
+            
+            <div class="col-md-6">
+                <h4>Get in Touch</h4>
+                <p>I love connecting with fellow developers and tech enthusiasts! Feel free to reach out if you have questions, suggestions, or just want to say hello.</p>
+                
+                <div class="d-flex gap-2 mt-3">
+                    <span class="badge bg-primary">Python</span>
+                    <span class="badge bg-success">Django</span>
+                    <span class="badge bg-info">Web Development</span>
+                    <span class="badge bg-warning">Open Source</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-light mt-4" role="alert">
+            <h5 class="alert-heading">💡 Fun Fact</h5>
+            <p class="mb-0">This blog is built with Django and showcases modern web development practices. You can explore the codebase and see how everything works together!</p>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'blog:home' %}" class="btn btn-outline-primary">&larr; Back to Blog</a>
+</div>
+{% endblock %}

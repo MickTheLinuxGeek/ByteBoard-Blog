@@ -1,0 +1,13 @@
+<div id="post-list-container" hx-target="this" hx-swap="outerHTML">
+    <h1 class="mb-4">{{ title }}</h1>
+
+    {% if posts %}
+        {% for post in posts %}
+            {% include "blog/partials/post_list_item.html" %}
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">No posts available.</div>
+    {% endif %}
+
+    {% include "blog/partials/pagination.html" %}
+</div>

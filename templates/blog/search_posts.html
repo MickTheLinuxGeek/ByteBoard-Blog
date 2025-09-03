@@ -1,5 +1,4 @@
 {% extends "blog/base.html" %}
-{% load reactpy %}
 
 {% block title %}
 {% if query %}
@@ -12,7 +11,7 @@ Search - Byte Board Blog
 {% block content %}
     {% if query %}
         {% if posts %}
-            {% component "blog.components.PostList" posts=posts page_obj=posts title="Search Results for: "|add:query query_params=query_params %}
+            {% include "blog/partials/post_list.html" with posts=posts page_obj=posts title="Search Results for: "|add:query query_params=query_params %}
         {% else %}
             <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">No results found</h4>

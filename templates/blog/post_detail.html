@@ -1,5 +1,4 @@
 {% extends "blog/base.html" %}
-{% load reactpy %}
 
 {% block meta_title %}{{ post.meta_title|default:post.title }}{% endblock %}
 {% block meta_description %}{{ post.meta_description|default:post.content|truncatewords:25 }}{% endblock %}
@@ -30,11 +29,8 @@
 {% endblock %}
 
 {% block content %}
-    {% if post.id %}
-        {% component "blog.components.PostDetail" post_id=post.id %}
-    {% else %}
-        <div class="alert alert-danger">Invalid post</div>
-    {% endif %}
+    {# Replace the component with a simple include #}
+    {% include "blog/partials/post_detail_content.html" %}
 
     <div class="d-flex justify-content-between mb-4">
         <div>
@@ -42,56 +38,21 @@
         </div>
 
         <div class="social-sharing">
-            <form action="{% url 'blog:share_post' post.id %}" method="post">
+            {# Add HTMX attributes to the form #}
+            <form
+                    hx-post="{% url 'blog:share_post' post.id %}"
+                    hx-target="#share-messages"
+                    hx-swap="innerHTML"
+                    class="d-inline-block">
                 {% csrf_token %}
                 <button type="submit" name="mastodon" class="btn btn-outline-primary">Share on Mastodon</button>
                 <button type="submit" name="bluesky" class="btn btn-outline-primary">Share on BlueSky</button>
             </form>
 
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+            {# This div is where the response from the HTMX request will be placed #}
+            <div id="share-messages" class="mt-2"></div>
         </div>
     </div>
-        <!--
-        <div class="social-sharing">
-            <span class="me-2">Share:</span>
-            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
-               target="_blank" class="btn btn-sm btn-outline-primary me-1">
-                Twitter
-            </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
-               target="_blank" class="btn btn-sm btn-outline-primary me-1">
-                Facebook
-            </a>
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}" 
-               target="_blank" class="btn btn-sm btn-outline-primary">
-                LinkedIn
-            </a>
-        </div>
-        -->
-
-    <!--
-    Disqus Comments
-    <div id="disqus_thread" class="mt-5"></div>
-    <script>
-        var disqus_config = function () {
-            this.page.url = '{{ request.build_absolute_uri }}';
-            this.page.identifier = '{{ post.slug }}';
-        };
-        (function() {
-            var d = document, s = d.createElement('script');
-            s.src = 'https://byteboard.disqus.com/embed.js';  // Replace with your Disqus shortname
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    -->
 {% endblock %}
 
 {% block extra_js %}

@@ -35,8 +35,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",
-    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,12 +43,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.sitemaps",
-    # Third-party apps
     "rest_framework",
-    "reactpy_django",
-    # Local apps
     "blog",
     "social_sharing",
+    "django_htmx",
 ]
 
 # Site framework settings
@@ -64,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "byte_board_blog.urls"
@@ -79,6 +76,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.media",
+                "blog.context_processors.blog_context",  # Add this line
             ],
         },
     },
@@ -160,15 +158,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# # --- REACTPY DJANGO SETTINGS (Optional but helpful) ---
-# REACTPY_COMPONENTS = {
-#     "default": "blog.components",  # path to your components
-# }
-# REACTPY_HOST_URLS = {
-#     "default": "/reactpy/",  # make sure this is routed in your urls.py
-# }
-#
-
 # Media files (User uploaded files)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -177,5 +166,3 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-ASGI_APPLICATION = "byte_board_blog.asgi.application"

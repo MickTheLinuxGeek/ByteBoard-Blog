@@ -1,0 +1,50 @@
+{% comment %}
+  This is the Django template equivalent of your PostDetail.py component.
+{% endcomment %}
+{% load markdown_extras %}
+<div class="card mb-4">
+    <!-- Post header -->
+    <div class="card-header">
+        <h1 class="card-title text-info">{{ post.title }}</h1>
+        <div class="text-light">
+            Published on {{ post.published_date|date:"F d, Y" }} by {{ post.author.username }}
+        </div>
+    </div>
+
+    <!-- Post content -->
+    <div class="card-body">
+        <div class="card-text markdown-content">
+            {{ post.content|markdown_filter }}
+        </div>
+    </div>
+
+    <!-- Footer with categories and tags -->
+    <div class="card-footer">
+        <div class="row">
+            <!-- Categories -->
+            <div class="col-md-6">
+                <h5>Categories:</h5>
+                <ul class="list-inline">
+                    {% for cat in post.categories.all %}
+                        <li class="list-inline-item">
+                            <a href="{{ cat.get_absolute_url }}" class="badge bg-primary text-decoration-none me-1">{{ cat.name }}</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-inline-item">None</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Tags -->
+            <div class="col-md-6">
+                <h5>Tags:</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tag in post.tags.all %}
+                        <a href="{{ tag.get_absolute_url }}" class="badge bg-secondary text-decoration-none">{{ tag.name }}</a>
+                    {% empty %}
+                        <span>None</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

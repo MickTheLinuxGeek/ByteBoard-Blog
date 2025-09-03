@@ -25,7 +25,8 @@ from django.urls import include, path
 
 from blog.admin import blog_admin_site
 from blog.sitemap import CategorySitemap, PostSitemap, StaticSitemap, TagSitemap
-from blog.views import markdown_preview
+
+# from blog.views import markdown_preview
 from django.views.generic.base import TemplateView
 
 
@@ -39,10 +40,10 @@ sitemaps = {
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("admin/blog/post/preview/", markdown_preview, name="markdown_preview"),
+    # path("admin/blog/post/preview/", markdown_preview, name="markdown_preview"),
     path("", include("blog.urls")),  # Include the blog app URLs
     path("api/", include("blog.api_urls")),  # Include the blog app API URLs
-    path("reactpy/", include("reactpy_django.http.urls")),
+    # path("reactpy/", include("reactpy_django.http.urls")),
     path("my-blog-admin/", blog_admin_site.urls, name="my-blog-admin"),
     # Sitemap URLs
     path(

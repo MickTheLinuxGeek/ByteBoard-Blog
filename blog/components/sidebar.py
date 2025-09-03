@@ -92,4 +92,9 @@ def _get_month_name(month_number):
         "November",
         "December",
     ]
+
+    # Validate month number is in valid range (1-12)
+    if not isinstance(month_number, int) or month_number < 1 or month_number > 12:
+        raise IndexError(f"Month number must be between 1 and 12, got {month_number}")
+
     return month_names[month_number - 1]

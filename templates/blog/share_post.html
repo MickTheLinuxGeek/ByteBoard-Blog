@@ -1,0 +1,59 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Share Post: {{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Share Post</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Post Preview -->
+                    <div class="post-preview mb-4">
+                        <h3>{{ post.title }}</h3>
+                        <p class="text-muted">
+                            Published on {{ post.published_date|date:"F d, Y" }}
+                            by {{ post.author.get_full_name|default:post.author.username }}
+                        </p>
+                        {% if post.excerpt %}
+                            <p>{{ post.excerpt }}</p>
+                        {% endif %}
+                        <p><strong>Post URL:</strong> 
+                            <a href="{{ post.get_absolute_url }}" target="_blank">
+                                {{ absolute_url }}
+                            </a>
+                        </p>
+                    </div>
+
+                    <!-- Sharing Options -->
+                    <div class="sharing-options">
+                        <h4>Share to:</h4>
+                        
+                        <form method="post" class="mb-3">
+                            {% csrf_token %}
+                            <div class="d-grid gap-2">
+                                <button type="submit" name="mastodon" class="btn btn-primary btn-lg">
+                                    <i class="fab fa-mastodon"></i> Share to Mastodon
+                                </button>
+                                <button type="submit" name="bluesky" class="btn btn-info btn-lg">
+                                    <i class="fab fa-bluesky"></i> Share to Bluesky
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Back to Post Button -->
+                        <div class="text-center">
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Post
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

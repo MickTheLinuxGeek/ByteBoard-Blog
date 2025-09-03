@@ -1,15 +1,16 @@
 import datetime
 
-import markdown
-from django.contrib.admin.views.decorators import staff_member_required
+# import markdown
+# from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.contrib import messages
 
 # from django.db.models import Count
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.decorators.csrf import csrf_protect
+
+# from django.views.decorators.csrf import csrf_protect
 from social_sharing.sharing import share_to_mastodon, share_to_bluesky
 
 from .models import Category, Post, Tag
@@ -50,32 +51,35 @@ def get_common_context():
 
 def home(request):
     """Home page view that displays a list of recent published posts."""
-    posts = (
-        Post.objects.select_related(
-            "author",
-        )  # select_related and prefetch_related added!
+    """Home page view that displays a list of recent published posts."""
+    # Fetch and paginate the data. Use prefetch/select_related for efficiency.
+    post_list = (
+        Post.objects.filter(status="published")
+        .select_related("author")
         .prefetch_related("categories", "tags")
-        .filter(status="published")
         .order_by("-published_date")
     )
-    # posts = Post.objects.filter(status="published").order_by("-published_date")
+    paginator = Paginator(post_list, 5)  # Show 5 posts per page
+    page_number = request.GET.get("page")
 
-    # Pagination
-    paginator = Paginator(posts, 5)  # Show 5 posts per page
-    page = request.GET.get("page")
-
+    # Use get_page() which handles invalid page numbers gracefully
     try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page
-        posts = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range, deliver last page of results
-        posts = paginator.page(paginator.num_pages)
+        page_obj = paginator.get_page(page_number)
+    except (EmptyPage, PageNotAnInteger):
+        page_obj = paginator.get_page(1)
 
-    # Get common context data
     context = get_common_context()
-    context["posts"] = posts
+    context.update(
+        {
+            "posts": page_obj,
+            "page_obj": page_obj,
+            "title": "Latest Posts",
+        }
+    )
+
+    # Using request.htmx from django-htmx, decide which template to render
+    if request.htmx:
+        return render(request, "blog/partials/post_list.html", context)
 
     return render(request, "blog/home.html", context)
 
@@ -166,16 +170,23 @@ def archive_posts(request, year, month=None):
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
 
+    # Construct the title in the view
+    if month is not None:
+        month_name = datetime.date(2000, month, 1).strftime("%B")
+        title = f"Archive:  Posts from {month_name} {year}"
+    else:
+        month_name = None
+        title = f"Archive:  Posts from {year}"
+
     # Get common context data
     context = get_common_context()
     context.update(
         {
             "year": year,
             "month": month,
-            "month_name": datetime.date(2000, month, 1).strftime("%B")
-            if month
-            else None,
+            "month_name": month_name,
             "posts": posts,
+            "title": title,
         },
     )
 
@@ -223,7 +234,8 @@ def search_posts(request):
         }
     )
 
-    return render(request, "blog/search_results.html", context)
+    # return render(request, "blog/search_results.html", context)
+    return render(request, "blog/search_posts.html", context)
 
 
 # Share post view:  Mastodon and Bluesky
@@ -232,51 +244,66 @@ def share_post(request, pk):
     # post = get_object_or_404(Post, slug=slug, status="published")
     post_url = request.build_absolute_uri(post.get_absolute_url())
 
-    if "mastodon" in request.POST:
-        result = share_to_mastodon(post.title, post_url)
-        messages.info(request, result)
-    elif "bluesky" in request.POST:
-        result = share_to_bluesky(post.title, post_url)
-        messages.info(request, result)
-
-    return redirect(post.get_absolute_url())
-
-
-@staff_member_required
-@csrf_protect
-def markdown_preview(request):
-    """Render Markdown content to HTML for the admin preview. This view is only accessible to staff members."""
     if request.method == "POST":
-        content = request.POST.get("content", "")
-        # Convert Markdown to HTML with syntax highlighting
-        html = markdown.markdown(
-            content,
-            extensions=[
-                "markdown.extensions.fenced_code",
-                "markdown.extensions.codehilite",
-                "markdown.extensions.tables",
-                "markdown.extensions.toc",
-            ],
-            extension_configs={
-                "markdown.extensions.codehilite": {
-                    "css_class": "highlight",
-                    "linenums": False,
-                },
-            },
-        )
-        return HttpResponse(html)
-    return HttpResponse("Method not allowed", status=405)
+        if "mastodon" in request.POST:
+            result = share_to_mastodon(post.title, post_url)
+            messages.success(request, result)
+        elif "bluesky" in request.POST:
+            result = share_to_bluesky(post.title, post_url)
+            messages.success(request, result)
+        else:
+            # Handle the unlikely case that the form was submitted without a known button.
+            messages.error(request, "Could not determine the sharing platform.")
+            # Fallback to a full redirect even for HTMX requests on error.
+            return redirect("blog:post_detail", slug=post.slug)
+
+    # Check if the request is from HTMX
+    if request.htmx:
+        # If yes, return just the messages partial
+        return render(request, "blog/partials/messages.html")
+
+    # For non-HTMX requests, fall back to the old behavior
+    return redirect("blog:post_detail", slug=post.slug)
 
 
-def reactpy_demo(request):
-    """View for demonstrating ReactPy integration with Django."""
-    # Get common context data
-    # context = get_common_context()
+# @staff_member_required
+# @csrf_protect
+# def markdown_preview(request):
+#     """Render Markdown content to HTML for the admin preview. This view is only accessible to staff members."""
+#     if request.method == "POST":
+#         content = request.POST.get("content", "")
+#         # Convert Markdown to HTML with syntax highlighting
+#         html = markdown.markdown(
+#             content,
+#             extensions=[
+#                 "markdown.extensions.fenced_code",
+#                 "markdown.extensions.codehilite",
+#                 "markdown.extensions.tables",
+#                 "markdown.extensions.toc",
+#             ],
+#             extension_configs={
+#                 "markdown.extensions.codehilite": {
+#                     "css_class": "highlight",
+#                     "linenums": False,
+#                 },
+#             },
+#         )
+#         return HttpResponse(html)
+#     return HttpResponse("Method not allowed", status=405)
+#
+#
+# def reactpy_demo(request):
+#     """View for demonstrating ReactPy integration with Django."""
+#     # Get common context data
+#     # context = get_common_context()
+#
+#     # Render the HelloWorld component
+#     # component = render_component(helloworld)
+#
+#     # Add the component to the context
+#     # context["component"] = component
+#
+#     return render(request, "blog/reactpy_demo.html")
 
-    # Render the HelloWorld component
-    # component = render_component(helloworld)
-
-    # Add the component to the context
-    # context["component"] = component
-
-    return render(request, "blog/reactpy_demo.html")
+def about_me(request):
+    return render(request, "blog/about_me.html")

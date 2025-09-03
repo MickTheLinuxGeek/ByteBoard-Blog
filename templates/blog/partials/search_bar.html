@@ -1,0 +1,15 @@
+<div class="card mb-4">
+    <div class="card-header">Search</div>
+    <div class="card-body">
+        <form action="{% url 'blog:search_posts' %}" method="get" class="d-flex">
+            <input
+                    type="text"
+                    name="q"
+                    class="form-control me-2"
+                    placeholder="Search posts..."
+                    aria-label="Search"
+                    value="{{ request.GET.q|default:'' }}">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+    </div>
+</div>
