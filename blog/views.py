@@ -5,6 +5,8 @@ import datetime
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.contrib import messages
+from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.vary import vary_on_headers
 
 # from django.db.models import Count
 # from django.http import HttpResponse
@@ -50,6 +52,7 @@ def get_common_context():
     return {"categories": categories, "tags": tags, "archive_dates": archive_dates}
 
 
+@vary_on_headers('Cookie')
 def home(request):
     """Home page view that displays a list of recent published posts."""
     """Home page view that displays a list of recent published posts."""
@@ -85,6 +88,7 @@ def home(request):
     return render(request, "blog/home.html", context)
 
 
+@vary_on_headers('Cookie')
 def post_detail(request, slug):
     """View for displaying a single post."""
     post = get_object_or_404(Post, slug=slug, status="published")
@@ -96,6 +100,8 @@ def post_detail(request, slug):
     return render(request, "blog/post_detail.html", context)
 
 
+@cache_page(3600)  # Cache for 1 hour (3600 seconds)
+@vary_on_headers('Cookie')
 def category_posts(request, slug):
     """View for displaying posts in a specific category."""
     category = get_object_or_404(Category, slug=slug)
@@ -125,6 +131,8 @@ def category_posts(request, slug):
     return render(request, "blog/category_posts.html", context)
 
 
+@cache_page(3600)  # Cache for 1 hour (3600 seconds)
+@vary_on_headers('Cookie')
 def tag_posts(request, slug):
     """View for displaying posts with a specific tag."""
     tag = get_object_or_404(Tag, slug=slug)
@@ -154,6 +162,8 @@ def tag_posts(request, slug):
     return render(request, "blog/tag_posts.html", context)
 
 
+@cache_page(7200)  # Cache for 2 hours (7200 seconds)
+@vary_on_headers('User-Agent')
 def archive_posts(request, year, month=None):
     """View for displaying posts from a specific year and month."""
     posts = Post.objects.filter(status="published")
@@ -318,5 +328,6 @@ def share_post(request, pk):
 #
 #     return render(request, "blog/reactpy_demo.html")
 
+@cache_page(86400)  # Cache for 24 hours (86400 seconds)
 def about_me(request):
     return render(request, "blog/about_me.html")

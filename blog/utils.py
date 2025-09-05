@@ -5,8 +5,41 @@ This module provides cached versions of common context data to reduce
 redundant database queries and improve performance.
 """
 
+from functools import wraps
 from django.core.cache import cache
+from django.views.decorators.cache import never_cache
 from .models import Category, Post, Tag
+
+
+def cache_for_anonymous_only(cache_decorator):
+    """
+    Custom decorator that applies caching only for anonymous users.
+    Admin users will always see fresh content, bypassing the cache.
+    
+    Args:
+        cache_decorator: The cache decorator to apply (e.g., cache_page(3600))
+    
+    Returns:
+        Decorator function that conditionally applies caching
+    """
+    def decorator(view_func):
+        # Apply never_cache for admin users
+        never_cached_view = never_cache(view_func)
+        # Apply the provided cache decorator for non-admin users
+        cached_view = cache_decorator(view_func)
+        
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            # Check if user is authenticated and is staff/admin
+            if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser):
+                # Admin users get fresh content (no cache)
+                return never_cached_view(request, *args, **kwargs)
+            else:
+                # Anonymous or regular users get cached content
+                return cached_view(request, *args, **kwargs)
+        
+        return wrapper
+    return decorator
 
 
 def _calculate_archive_dates():
