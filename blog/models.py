@@ -2,6 +2,7 @@ from typing import ClassVar
 import re
 
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
@@ -169,11 +170,54 @@ class Post(BaseModel):
         self.published_date = None
         self.save()
 
+    def get_cached_content(self):
+        """
+        Return rendered HTML content from markdown with caching.
+        Uses caching with 24-hour TTL to improve performance.
+        """
+        # Check cache first
+        cache_key = f"post_content_{self.id}"
+        cached_content = cache.get(cache_key)
+        
+        if cached_content is not None:
+            return cached_content
+        
+        # Generate HTML content if not cached
+        html_content = md.markdown(
+            self.content,
+            extensions=[
+                "markdown.extensions.fenced_code",
+                "markdown.extensions.codehilite",
+                "markdown.extensions.tables",
+                "markdown.extensions.toc",
+            ],
+            extension_configs={
+                "markdown.extensions.codehilite": {
+                    "css_class": "highlight",
+                    "linenums": False,
+                },
+            },
+        )
+        
+        # Cache the result for 24 hours (86400 seconds)
+        cache.set(cache_key, html_content, 86400)
+        
+        return html_content
+
     @property
     def summary(self):
         """
         A plain-text, truncated summary of the post content.
+        Uses caching with 24-hour TTL to improve performance.
         """
+        # Check cache first
+        cache_key = f"post_summary_{self.id}"
+        cached_summary = cache.get(cache_key)
+        
+        if cached_summary is not None:
+            return cached_summary
+        
+        # Generate summary if not cached
         # 0 Remove markdown headers from content
         content_without_headers = re.sub(
             r"^#{1,6}\s+.*$", "", self.content, flags=re.MULTILINE
@@ -189,5 +233,11 @@ class Post(BaseModel):
         # 3. Truncate words (a simple way)
         words = plain_text.split()
         if len(words) > 30:
-            return " ".join(words[:30]) + "..."
-        return plain_text
+            summary = " ".join(words[:30]) + "..."
+        else:
+            summary = plain_text
+        
+        # Cache the result for 24 hours (86400 seconds)
+        cache.set(cache_key, summary, 86400)
+        
+        return summary

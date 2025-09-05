@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from social_sharing.sharing import share_to_mastodon, share_to_bluesky
 
 from .models import Category, Post, Tag
+from .utils import get_cached_common_context
 
 
 def get_common_context():
@@ -68,7 +69,7 @@ def home(request):
     except (EmptyPage, PageNotAnInteger):
         page_obj = paginator.get_page(1)
 
-    context = get_common_context()
+    context = get_cached_common_context()
     context.update(
         {
             "posts": page_obj,
@@ -89,7 +90,7 @@ def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug, status="published")
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context["post"] = post
 
     return render(request, "blog/post_detail.html", context)
@@ -98,8 +99,11 @@ def post_detail(request, slug):
 def category_posts(request, slug):
     """View for displaying posts in a specific category."""
     category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(categories=category, status="published").order_by(
-        "-published_date",
+    posts = (
+        Post.objects.filter(categories=category, status="published")
+        .select_related("author")
+        .prefetch_related("categories", "tags")
+        .order_by("-published_date")
     )
 
     # Pagination
@@ -114,7 +118,7 @@ def category_posts(request, slug):
         posts = paginator.page(paginator.num_pages)
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context["category"] = category
     context["posts"] = posts
 
@@ -124,8 +128,11 @@ def category_posts(request, slug):
 def tag_posts(request, slug):
     """View for displaying posts with a specific tag."""
     tag = get_object_or_404(Tag, slug=slug)
-    posts = Post.objects.filter(tags=tag, status="published").order_by(
-        "-published_date",
+    posts = (
+        Post.objects.filter(tags=tag, status="published")
+        .select_related("author")
+        .prefetch_related("categories", "tags")
+        .order_by("-published_date")
     )
 
     # Pagination
@@ -140,7 +147,7 @@ def tag_posts(request, slug):
         posts = paginator.page(paginator.num_pages)
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context["tag"] = tag
     context["posts"] = posts
 
@@ -157,7 +164,11 @@ def archive_posts(request, year, month=None):
     if month:
         posts = posts.filter(published_date__month=month)
 
-    posts = posts.order_by("-published_date")
+    posts = (
+        posts.select_related("author")
+        .prefetch_related("categories", "tags")
+        .order_by("-published_date")
+    )
 
     # Pagination
     paginator = Paginator(posts, 5)  # Show 5 posts per page
@@ -179,7 +190,7 @@ def archive_posts(request, year, month=None):
         title = f"Archive:  Posts from {year}"
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context.update(
         {
             "year": year,
@@ -207,6 +218,8 @@ def search_posts(request):
                 | Q(categories__name__icontains=query)
                 | Q(tags__name__icontains=query)
             )
+            .select_related("author")
+            .prefetch_related("categories", "tags")
             .distinct()
             .order_by("-published_date")
         )
@@ -225,7 +238,7 @@ def search_posts(request):
         posts = paginator.page(paginator.num_pages)
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context.update(
         {
             "query": query,
