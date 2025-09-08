@@ -174,10 +174,17 @@ class Post(BaseModel):
         """
         Return rendered HTML content from markdown with caching.
         Uses caching with 24-hour TTL to improve performance.
+        Implements graceful fallback if cache operations fail.
         """
-        # Check cache first
+        # Check cache first with graceful fallback
         cache_key = f"post_content_{self.id}"
-        cached_content = cache.get(cache_key)
+        cached_content = None
+        
+        try:
+            cached_content = cache.get(cache_key)
+        except Exception:
+            # Cache backend unavailable, fall back to direct processing
+            pass
         
         if cached_content is not None:
             return cached_content
@@ -199,8 +206,12 @@ class Post(BaseModel):
             },
         )
         
-        # Cache the result for 24 hours (86400 seconds)
-        cache.set(cache_key, html_content, 86400)
+        # Cache the result for 24 hours (86400 seconds) with graceful fallback
+        try:
+            cache.set(cache_key, html_content, 86400)
+        except Exception:
+            # Cache set failed, but we have the processed content
+            pass
         
         return html_content
 
@@ -209,10 +220,17 @@ class Post(BaseModel):
         """
         A plain-text, truncated summary of the post content.
         Uses caching with 24-hour TTL to improve performance.
+        Implements graceful fallback if cache operations fail.
         """
-        # Check cache first
+        # Check cache first with graceful fallback
         cache_key = f"post_summary_{self.id}"
-        cached_summary = cache.get(cache_key)
+        cached_summary = None
+        
+        try:
+            cached_summary = cache.get(cache_key)
+        except Exception:
+            # Cache backend unavailable, fall back to direct processing
+            pass
         
         if cached_summary is not None:
             return cached_summary
@@ -237,7 +255,11 @@ class Post(BaseModel):
         else:
             summary = plain_text
         
-        # Cache the result for 24 hours (86400 seconds)
-        cache.set(cache_key, summary, 86400)
+        # Cache the result for 24 hours (86400 seconds) with graceful fallback
+        try:
+            cache.set(cache_key, summary, 86400)
+        except Exception:
+            # Cache set failed, but we have the processed summary
+            pass
         
         return summary

@@ -86,28 +86,52 @@ def get_cached_common_context():
     - tags_all: 30 minutes TTL (1800 seconds)  
     - archive_dates: 6 hours TTL (21600 seconds)
     
+    Implements graceful fallback - if cache operations fail, the function
+    continues to work by directly querying the database.
+    
     Returns:
         dict: Dictionary containing categories, tags, and archive_dates.
     """
-    # Try to get cached data
-    categories = cache.get("categories_all")
-    tags = cache.get("tags_all")
-    archive_dates = cache.get("archive_dates")
+    # Initialize variables with None
+    categories = None
+    tags = None
+    archive_dates = None
+    
+    # Try to get cached data with graceful fallback
+    try:
+        categories = cache.get("categories_all")
+        tags = cache.get("tags_all")
+        archive_dates = cache.get("archive_dates")
+    except Exception:
+        # Cache backend unavailable, fall back to direct database queries
+        pass
     
     # Fetch and cache categories if not in cache
     if categories is None:
         categories = list(Category.objects.all())
-        cache.set("categories_all", categories, 3600)  # 1 hour TTL
+        try:
+            cache.set("categories_all", categories, 3600)  # 1 hour TTL
+        except Exception:
+            # Cache set failed, but we have the data from database
+            pass
     
     # Fetch and cache tags if not in cache
     if tags is None:
         tags = list(Tag.objects.all())
-        cache.set("tags_all", tags, 1800)  # 30 minutes TTL
+        try:
+            cache.set("tags_all", tags, 1800)  # 30 minutes TTL
+        except Exception:
+            # Cache set failed, but we have the data from database
+            pass
     
     # Fetch and cache archive dates if not in cache
     if archive_dates is None:
         archive_dates = _calculate_archive_dates()
-        cache.set("archive_dates", archive_dates, 21600)  # 6 hours TTL
+        try:
+            cache.set("archive_dates", archive_dates, 21600)  # 6 hours TTL
+        except Exception:
+            # Cache set failed, but we have the data from database
+            pass
     
     return {
         "categories": categories,
