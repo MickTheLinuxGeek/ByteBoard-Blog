@@ -19,3 +19,4 @@ wheels/
 /staticfiles/
 /media/
 /.env
+/logs/

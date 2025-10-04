@@ -5,6 +5,8 @@ import datetime
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.contrib import messages
+from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.vary import vary_on_headers
 
 # from django.db.models import Count
 # from django.http import HttpResponse
@@ -14,6 +16,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from social_sharing.sharing import share_to_mastodon, share_to_bluesky
 
 from .models import Category, Post, Tag
+from .utils import get_cached_common_context
 
 
 def get_common_context():
@@ -49,6 +52,7 @@ def get_common_context():
     return {"categories": categories, "tags": tags, "archive_dates": archive_dates}
 
 
+@vary_on_headers('Cookie')
 def home(request):
     """Home page view that displays a list of recent published posts."""
     """Home page view that displays a list of recent published posts."""
@@ -68,7 +72,7 @@ def home(request):
     except (EmptyPage, PageNotAnInteger):
         page_obj = paginator.get_page(1)
 
-    context = get_common_context()
+    context = get_cached_common_context()
     context.update(
         {
             "posts": page_obj,
@@ -84,22 +88,28 @@ def home(request):
     return render(request, "blog/home.html", context)
 
 
+@vary_on_headers('Cookie')
 def post_detail(request, slug):
     """View for displaying a single post."""
     post = get_object_or_404(Post, slug=slug, status="published")
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context["post"] = post
 
     return render(request, "blog/post_detail.html", context)
 
 
+@cache_page(3600)  # Cache for 1 hour (3600 seconds)
+@vary_on_headers('Cookie')
 def category_posts(request, slug):
     """View for displaying posts in a specific category."""
     category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(categories=category, status="published").order_by(
-        "-published_date",
+    posts = (
+        Post.objects.filter(categories=category, status="published")
+        .select_related("author")
+        .prefetch_related("categories", "tags")
+        .order_by("-published_date")
     )
 
     # Pagination
@@ -114,18 +124,23 @@ def category_posts(request, slug):
         posts = paginator.page(paginator.num_pages)
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context["category"] = category
     context["posts"] = posts
 
     return render(request, "blog/category_posts.html", context)
 
 
+@cache_page(3600)  # Cache for 1 hour (3600 seconds)
+@vary_on_headers('Cookie')
 def tag_posts(request, slug):
     """View for displaying posts with a specific tag."""
     tag = get_object_or_404(Tag, slug=slug)
-    posts = Post.objects.filter(tags=tag, status="published").order_by(
-        "-published_date",
+    posts = (
+        Post.objects.filter(tags=tag, status="published")
+        .select_related("author")
+        .prefetch_related("categories", "tags")
+        .order_by("-published_date")
     )
 
     # Pagination
@@ -140,13 +155,15 @@ def tag_posts(request, slug):
         posts = paginator.page(paginator.num_pages)
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context["tag"] = tag
     context["posts"] = posts
 
     return render(request, "blog/tag_posts.html", context)
 
 
+@cache_page(7200)  # Cache for 2 hours (7200 seconds)
+@vary_on_headers('User-Agent')
 def archive_posts(request, year, month=None):
     """View for displaying posts from a specific year and month."""
     posts = Post.objects.filter(status="published")
@@ -157,7 +174,11 @@ def archive_posts(request, year, month=None):
     if month:
         posts = posts.filter(published_date__month=month)
 
-    posts = posts.order_by("-published_date")
+    posts = (
+        posts.select_related("author")
+        .prefetch_related("categories", "tags")
+        .order_by("-published_date")
+    )
 
     # Pagination
     paginator = Paginator(posts, 5)  # Show 5 posts per page
@@ -179,7 +200,7 @@ def archive_posts(request, year, month=None):
         title = f"Archive:  Posts from {year}"
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context.update(
         {
             "year": year,
@@ -207,6 +228,8 @@ def search_posts(request):
                 | Q(categories__name__icontains=query)
                 | Q(tags__name__icontains=query)
             )
+            .select_related("author")
+            .prefetch_related("categories", "tags")
             .distinct()
             .order_by("-published_date")
         )
@@ -225,7 +248,7 @@ def search_posts(request):
         posts = paginator.page(paginator.num_pages)
 
     # Get common context data
-    context = get_common_context()
+    context = get_cached_common_context()
     context.update(
         {
             "query": query,
@@ -305,5 +328,6 @@ def share_post(request, pk):
 #
 #     return render(request, "blog/reactpy_demo.html")
 
+@cache_page(86400)  # Cache for 24 hours (86400 seconds)
 def about_me(request):
     return render(request, "blog/about_me.html")

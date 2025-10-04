@@ -14,7 +14,7 @@
     <!-- Post content -->
     <div class="card-body">
         <div class="card-text markdown-content">
-            {{ post.content|markdown_filter }}
+            {{ post.get_cached_content|safe }}
         </div>
     </div>
 
